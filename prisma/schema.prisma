@@ -8,20 +8,42 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  username String @unique
-  words    Word[]
+  id       String  @id @default(uuid())
+  username String  @unique
+  experiments Experiment[] // 사용자가 참여한 실험들
+}
+
+model Experiment {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  seedWord  SeedWord @relation(fields: [seedWordId], references: [id])
+  seedWordId String
+  words     Word[]
+  ratings   Rating[]
+  createdAt DateTime @default(now())
 }
 
 model Word {
-  id       String @id @default(uuid())
-  user     User   @relation(fields: [userId], references: [id])
-  userId   String
-  content  String
-  seedWord String
+  id         String  @id @default(uuid())
+  experiment Experiment @relation(fields: [experimentId], references: [id])
+  experimentId String
+  content    String
+  ratings    Rating[]
+  createdAt  DateTime @default(now())
 }
 
 model SeedWord {
-  id     String @id @default(uuid())
-  word   String @unique
+  id    String @id @default(uuid())
+  word  String @unique
+  experiments Experiment[]
+}
+
+model Rating {
+  id         String   @id @default(uuid())
+  experiment Experiment @relation(fields: [experimentId], references: [id])
+  experimentId String
+  word        Word     @relation(fields: [wordId], references: [id])
+  wordId      String
+  score       Int
 }
