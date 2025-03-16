@@ -14,13 +14,18 @@ export async function GET() {
           id: string;
           user: { username: string };
           seedWord: { word: string };
-          words: string[];
+          words: {
+            experimentId: string;
+            id: string;
+            createdAt: Date;
+            content: string;
+          }[];
           createdAt: Date;
         }) => ({
           experimentId: experiment.id,
           username: experiment.user.username,
           seedWord: experiment.seedWord.word,
-          wordCount: experiment.words.length,
+          wordCount: experiment.words.map((word) => word.content).length,
           createdAt: experiment.createdAt,
         })
       ),
